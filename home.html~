@@ -9,11 +9,20 @@
             xhttp.open("POST", "" , true);
             xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhttp.send("dir=" + direction});
+            xhttp.send("dir=" + direction);
         }
     </SCRIPT>
     </HEAD>
     <BODY>
-        <button type="button" onclick="move('F');">f</button> 
+        <DIV>
+            <button type="button" onclick="move('F');">f</button> 
+        </DIV>
+        <DIV>
+            <button type="button" onclick="move('L');">l</button> 
+            <button type="button" onclick="move('R');">R</button> 
+        </DIV>
+        <DIV>
+            <button type="button" onclick="move('B');">B</button> 
+        </DIV>
     </BODY>
 </HTML>
