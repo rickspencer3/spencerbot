@@ -29,15 +29,16 @@ class S(BaseHTTPRequestHandler):
     def do_GET(self):
         self._set_headers()
         
-        self.wfile.write(self.file_as_string("./home.html"))
+        self.wfile.write(self.file_as_string("home.html"))
 
     def do_HEAD(self):
         self._set_headers()
         
     def do_POST(self):
-        # Doesn't do anything with posted data
-        self._set_headers()
+        # Doesn't do anything with posted data\
         print "received post"
+        self._set_headers()
+        
         
     def file_as_string(self, filename):
         f = open(os.path.join(sys.path[0], filename), 'r')

@@ -3,10 +3,14 @@
         <TITLE>
             SPENCERBOT
         </TITLE>
+    <SCRIPT>
+        function move(direction) {
+            xhttp.open("POST", "", true);
+            xhttp.send();
+        }
+    </SCRIPT>
     </HEAD>
     <BODY>
-        <form action = "" method = "post">
-            <input type="button" name="forward" value="f" />
-        </form>
+        <button type="button" onclick="move('F');">f</button> 
     </BODY>
 </HTML>
