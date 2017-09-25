@@ -19,6 +19,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 import SocketServer
 import os
 import sys
+import cgi
 
 class S(BaseHTTPRequestHandler):
     def _set_headers(self):
@@ -35,10 +36,10 @@ class S(BaseHTTPRequestHandler):
         self._set_headers()
         
     def do_POST(self):
-        # Doesn't do anything with posted data\
-        print "received post"
         self._set_headers()
-        
+        length = int(self.headers.getheader('content-length'))
+        data = cgi.parse_qs(self.rfile.read(length), keep_blank_values=0)
+        print(data)        
         
     def file_as_string(self, filename):
         f = open(os.path.join(sys.path[0], filename), 'r')

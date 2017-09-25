@@ -6,8 +6,10 @@
     <SCRIPT>
         function move(direction) {
             var xhttp = new XMLHttpRequest();
-            xhttp.open("POST", "", true);
-            xhttp.send();
+            xhttp.open("POST", "" , true);
+            xhttp.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhttp.send("dir=" + direction);
         }
     </SCRIPT>
     </HEAD>
