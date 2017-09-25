@@ -37,7 +37,7 @@ class S(BaseHTTPRequestHandler):
     def do_POST(self):
         # Doesn't do anything with posted data
         self._set_headers()
-        self.wfile.write("<html><body><h1>POST!</h1></body></html>")
+        print "received post"
         
     def file_as_string(self, filename):
         f = open(os.path.join(sys.path[0], filename), 'r')
