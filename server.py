@@ -26,7 +26,8 @@ class S(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self._set_headers()
-        self.wfile.write("<html><body><h1>hi!</h1></body></html>")
+        
+        self.wfile.write(self.file_as_string("home.html"))
 
     def do_HEAD(self):
         self._set_headers()
@@ -36,6 +37,10 @@ class S(BaseHTTPRequestHandler):
         self._set_headers()
         self.wfile.write("<html><body><h1>POST!</h1></body></html>")
         
+def file_as_string(self, filename):
+    f = open(filename, 'r')
+    return f.read()
+    
 def run(server_class=HTTPServer, handler_class=S, port=80):
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
