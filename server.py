@@ -1,18 +1,6 @@
 #!/usr/bin/env python
 """
-Very simple HTTP server in python.
-
-Usage::
-    ./dummy-web-server.py [<port>]
-
-Send a GET request::
-    curl http://localhost
-
-Send a HEAD request::
-    curl -I http://localhost
-
-Send a POST request::
-    curl -d "foo=bar&bin=baz" http://localhost
+UI for a raspberry pi robot
 
 """
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
@@ -29,21 +17,24 @@ class S(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self._set_headers()
-        
-        self.wfile.write(self.file_as_string("home.html"))
+        html = self.file_as_string("home.html")
+        self.wfile.write(html)
 
     def do_HEAD(self):
         self._set_headers()
         
     def do_POST(self):
         self._set_headers()
-        length = int(self.headers.getheader('content-length'))
-        data = cgi.parse_qs(self.rfile.read(length), keep_blank_values=0)
+        data = self.get_post_data()
         print(data["dir"][0])
         
     def file_as_string(self, filename):
         f = open(os.path.join(sys.path[0], filename), 'r')
         return f.read()
+        
+    def get_post_data(self):
+        length = int(self.headers.getheader('content-length'))
+        return cgi.parse_qs(self.rfile.read(length), keep_blank_values=0)
     
 def run(server_class=HTTPServer, handler_class=S, port=80):
     server_address = ('', port)
