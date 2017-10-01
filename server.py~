@@ -44,7 +44,10 @@ class S(BaseHTTPRequestHandler):
     def do_POST(self):
         self._set_headers()
         data = self.get_post_data()
-        print(data["dir"][0])
+        if data["dir"][0] = "F":
+            self.forward()
+        elif data["dir"][0] = "S":
+            self.stop()
         
     def file_as_string(self, filename):
         f = open(os.path.join(sys.path[0], filename), 'r')
