@@ -10,23 +10,18 @@ import sys
 import cgi
 import RPi.GPIO as GPIO
 
-class S(BaseHTTPRequestHandler):
-    _wheels = [[0,0],[37,33]]
+wheels = [[0,0],[37,33]]
 
-    def _setup_GPIO(self):
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(self._wheels[1][0], GPIO.OUT)
-        GPIO.setup(self._wheels[1][1], GPIO.OUT)
-        GPIO.output(self._wheels[1][0], 0)
-        GPIO.output(self._wheels[1][1], 0)
+class S(BaseHTTPRequestHandler):
+
         
     def forward(self):
-        GPIO.output(self._wheels[1][0], 1)
-        GPIO.output(self._wheels[1][1], 1)
+        GPIO.output(wheels[1][0], 1)
+        GPIO.output(wheels[1][1], 1)
     
     def stop(self):
-        GPIO.output(self._wheels[1][0], 1)
-        GPIO.output(self._wheels[1][1], 1)
+        GPIO.output(wheels[1][0], 1)
+        GPIO.output(wheels[1][1], 1)
     
     def _set_headers(self):
         self.send_response(200)
@@ -60,6 +55,12 @@ class S(BaseHTTPRequestHandler):
 
 
 def run(server_class=HTTPServer, handler_class=S, port=80):
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(wheels[1][0], GPIO.OUT)
+    GPIO.setup(wheels[1][1], GPIO.OUT)
+    GPIO.output(wheels[1][0], 0)
+    GPIO.output(wheels[1][1], 0)
+    
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print 'Starting httpd...'

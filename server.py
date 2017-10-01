@@ -20,8 +20,8 @@ class S(BaseHTTPRequestHandler):
         GPIO.output(wheels[1][1], 1)
     
     def stop(self):
-        GPIO.output(wheels[1][0], 1)
-        GPIO.output(wheels[1][1], 1)
+        GPIO.output(wheels[1][0], 0)
+        GPIO.output(wheels[1][1], 0)
     
     def _set_headers(self):
         self.send_response(200)
