@@ -60,6 +60,7 @@ class S(BaseHTTPRequestHandler):
 
 
 def run(server_class=HTTPServer, handler_class=S, port=80):
+    self._setup_GPIO()
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     print 'Starting httpd...'
