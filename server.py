@@ -65,10 +65,11 @@ class S(BaseHTTPRequestHandler):
 
 def run(server_class=HTTPServer, handler_class=S, port=80):
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(wheels[1][0], GPIO.OUT)
-    GPIO.setup(wheels[1][1], GPIO.OUT)
-    GPIO.output(wheels[1][0], 0)
-    GPIO.output(wheels[1][1], 0)
+    GPIO.setup(wheels["right"]["forward"], GPIO.OUT)
+    GPIO.setup(wheels["right"]["reverse"], GPIO.OUT)
+    GPIO.setup(wheels["left"]["forward"], GPIO.OUT)
+    GPIO.setup(wheels["left"]["reverse"], GPIO.OUT)   
+
     
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
