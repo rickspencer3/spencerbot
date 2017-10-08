@@ -52,7 +52,9 @@ class S(BaseHTTPRequestHandler):
             self.forward()
         elif data["dir"][0] == "S":
             self.stop()
-        
+         elif data["dir"][0] == "B":
+            self.reverse()
+                  
     def file_as_string(self, filename):
         f = open(os.path.join(sys.path[0], filename), 'r')
         return f.read()
