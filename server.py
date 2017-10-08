@@ -65,7 +65,7 @@ class S(BaseHTTPRequestHandler):
             self.reverse()
         elif data["dir"][0] == "R":
             self.right()
-         elif data["dir"][0] == "L":
+        elif data["dir"][0] == "L":
             self.left()
             
     def file_as_string(self, filename):
