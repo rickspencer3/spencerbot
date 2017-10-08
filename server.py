@@ -10,18 +10,27 @@ import sys
 import cgi
 import RPi.GPIO as GPIO
 
-wheels = [[0,0],[37,33]]
+wheels = {"right":{"forward":40,"reverse":38},"left":{"forward":33,"reverse":37}}
 
 class S(BaseHTTPRequestHandler):
 
-        
+
     def forward(self):
-        GPIO.output(wheels[1][0], 1)
-        GPIO.output(wheels[1][1], 1)
-    
+        self.stop()
+        GPIO.output(wheels["right"]["forward"], 1)
+        GPIO.output(wheels["left"]["forward"], 1)
+
+    def reverse(self):
+        self.stop()
+        GPIO.output(wheels["right"]["reverse"], 1)
+        GPIO.output(wheels["left"]["reverse"], 1)
+
+        
     def stop(self):
-        GPIO.output(wheels[1][0], 0)
-        GPIO.output(wheels[1][1], 0)
+        GPIO.output(wheels["right"]["forward"], 0)
+        GPIO.output(wheels["right"]["reverse"], 0)
+        GPIO.output(wheels["left"]["forward"], 0)
+        GPIO.output(wheels["left"]["reverse"], 0)
     
     def _set_headers(self):
         self.send_response(200)
