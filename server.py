@@ -52,7 +52,7 @@ class S(BaseHTTPRequestHandler):
             self.forward()
         elif data["dir"][0] == "S":
             self.stop()
-         elif data["dir"][0] == "B":
+        elif data["dir"][0] == "B":
             self.reverse()
                   
     def file_as_string(self, filename):
