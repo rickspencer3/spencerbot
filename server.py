@@ -10,36 +10,47 @@ import sys
 import cgi
 import RPi.GPIO as GPIO
 
-wheels = {"right":{"forward":40,"reverse":38},"left":{"forward":33,"reverse":37}}
+wheels = {"front":{"right":{"forward":40,"reverse":38},"left":{"forward":33,"reverse":37}},"back":{"right":{"forward":18,"reverse":15},"left":{"forward":16,"reverse":12}}}
+
+#right rear: forward: 18, reverse: 15
+#right left: forward 16, reverse: 12
 
 class S(BaseHTTPRequestHandler):
 
 
     def forward(self):
         self.stop()
-        GPIO.output(wheels["right"]["forward"], 1)
-        GPIO.output(wheels["left"]["forward"], 1)
+        GPIO.output(wheels["front"]["right"]["forward"], 1)
+        GPIO.output(wheels["front"]["left"]["forward"], 1)
+        GPIO.output(wheels["back"]["right"]["forward"], 1)
+        GPIO.output(wheels["back"]["left"]["forward"], 1)
+
 
     def reverse(self):
         self.stop()
-        GPIO.output(wheels["right"]["reverse"], 1)
-        GPIO.output(wheels["left"]["reverse"], 1)
+        GPIO.output(wheels["front"]["right"]["reverse"], 1)
+        GPIO.output(wheels["back"]["left"]["reverse"], 1)
 
     def right(self):
         self.stop()
-        GPIO.output(wheels["right"]["forward"], 1)
-        GPIO.output(wheels["left"]["reverse"], 1)
+        GPIO.output(wheels["front"]["left"]["forward"], 1)
+        GPIO.output(wheels["back"]["left"]["forard"], 1)
         
     def left(self):
         self.stop()
-        GPIO.output(wheels["right"]["reverse"], 1)
-        GPIO.output(wheels["left"]["forward"], 1)
+        GPIO.output(wheels["front"]["right"]["reverse"], 1)
+        GPIO.output(wheels["back"]["right"]["front"], 1)
         
     def stop(self):
-        GPIO.output(wheels["right"]["forward"], 0)
-        GPIO.output(wheels["right"]["reverse"], 0)
-        GPIO.output(wheels["left"]["forward"], 0)
-        GPIO.output(wheels["left"]["reverse"], 0)
+        GPIO.output(wheels["front"]["right"]["forward"], 0)
+        GPIO.output(wheels["front"]["right"]["reverse"], 0)
+        GPIO.output(wheels["front"]["left"]["forward"], 0)
+        GPIO.output(wheels["front"]["left"]["reverse"], 0)
+        GPIO.output(wheels["back"]["right"]["forward"], 0)
+        GPIO.output(wheels["back"]["right"]["reverse"], 0)
+        GPIO.output(wheels["back"]["left"]["forward"], 0)
+        GPIO.output(wheels["back"]["left"]["reverse"], 0)
+
     
     def _set_headers(self):
         self.send_response(200)
@@ -80,10 +91,14 @@ class S(BaseHTTPRequestHandler):
 
 def run(server_class=HTTPServer, handler_class=S, port=80):
     GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(wheels["right"]["forward"], GPIO.OUT)
-    GPIO.setup(wheels["right"]["reverse"], GPIO.OUT)
-    GPIO.setup(wheels["left"]["forward"], GPIO.OUT)
-    GPIO.setup(wheels["left"]["reverse"], GPIO.OUT)   
+    GPIO.setup(wheels["front"]["right"]["forward"], GPIO.OUT)
+    GPIO.setup(wheels["front"]["right"]["reverse"], GPIO.OUT)
+    GPIO.setup(wheels["front"]["left"]["forward"], GPIO.OUT)
+    GPIO.setup(wheels["front"]["left"]["reverse"], GPIO.OUT)   
+    GPIO.setup(wheels["back"]["right"]["forward"], GPIO.OUT)
+    GPIO.setup(wheels["back"]["right"]["reverse"], GPIO.OUT)
+    GPIO.setup(wheels["back"]["left"]["forward"], GPIO.OUT)
+    GPIO.setup(wheels["back"]["left"]["reverse"], GPIO.OUT)   
 
     
     server_address = ('', port)
