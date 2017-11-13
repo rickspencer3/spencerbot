@@ -29,6 +29,8 @@ class S(BaseHTTPRequestHandler):
     def reverse(self):
         self.stop()
         GPIO.output(wheels["front"]["right"]["reverse"], 1)
+        GPIO.output(wheels["front"]["left"]["reverse"], 1)
+        GPIO.output(wheels["back"]["right"]["reverse"], 1)
         GPIO.output(wheels["back"]["left"]["reverse"], 1)
 
     def right(self):
