@@ -12,18 +12,39 @@
             xhttp.send("dir=" + direction);
         }
     </SCRIPT>
+    <STYLE>
+        IMG {
+            height: 44px;
+            width: 44px;
+        }
+    </STYLE>
     </HEAD>
     <BODY>
-        <DIV>
-            <button type="button" onclick="move('F');">f</button> 
-        </DIV>
-        <DIV>
-            <button type="button" onclick="move('L');">l</button> 
-            <button type="button" onclick="move('S');">s</button> 
-            <button type="button" onclick="move('R');">r</button> 
-        </DIV>
-        <DIV>
-            <button type="button" onclick="move('B');">b</button> 
-        </DIV>
+        <TABLE>
+            <TR> 
+                <TD></TD>
+                <TD><button type="button" onclick="move('F');">
+                    <IMG src="./images/forward.png" />
+                </button> </TD>
+                <TD></TD>
+            </TR>
+            <TR> 
+                <TD><button type="button" onclick="move('L');">
+                    <IMG src="./images/turn_left.png" />
+                </button> </TD>
+                <TD><button type="button" onclick="move('S');">
+                    <IMG src="./images/stop.png" />
+                </button> </TD>
+                <TD><button type="button" onclick="move('R');">
+                    <IMG src="./images/turn_right.png" />
+                </button> </TD>
+            </TR>
+            <TR> 
+                <TD></TD>
+                <TD><button type="button" onclick="move('B');">
+                <IMG src="./images/backward.png" /></button> </TD>
+                <TD></TD>
+            </TR>
+        </TABLE>
     </BODY>
 </HTML>
