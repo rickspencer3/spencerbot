@@ -8,7 +8,10 @@ import SocketServer
 import os
 import sys
 import cgi
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except:
+    pass
 
 wheels = {"front":{"right":{"forward":40,"reverse":38},"left":{"forward":33,"reverse":37}},"back":{"right":{"forward":18,"reverse":15},"left":{"forward":16,"reverse":12}}}
 
@@ -54,16 +57,24 @@ class S(BaseHTTPRequestHandler):
         GPIO.output(wheels["back"]["left"]["reverse"], 0)
 
     
-    def _set_headers(self):
+    def _set_headers(self, type):
         self.send_response(200)
-        self.send_header('Content-type', 'text/html')
+        if type == "htlm":
+            self.send_header('Content-type', 'text/html')
+        if type == "image":
+            self.send_header('Content-type', 'image/png')
         self.end_headers()
 
     def do_GET(self):
-        self._set_headers()
-        html = self.file_as_string("home.html")
-        self.wfile.write(html)
-
+        if self.path == "/":
+            self._set_headers("html")
+            html = self.file_as_string("home.html")
+            self.wfile.write(html)
+        else:
+            self._set_headers("image")
+            img = self.file_as_binary(self.path)
+            self.wfile.write(img)
+        
     def do_HEAD(self):
         self._set_headers()
         
@@ -81,6 +92,12 @@ class S(BaseHTTPRequestHandler):
         elif data["dir"][0] == "L":
             self.left()
             
+    def file_as_binary(self, filename):
+        if filename.startswith("/"):
+            filename=filename[1:]
+        f = open(os.path.join(sys.path[0], filename), 'rb')
+        return f.read()
+            
     def file_as_string(self, filename):
         f = open(os.path.join(sys.path[0], filename), 'r')
         return f.read()
@@ -92,16 +109,18 @@ class S(BaseHTTPRequestHandler):
 
 
 def run(server_class=HTTPServer, handler_class=S, port=80):
-    GPIO.setmode(GPIO.BOARD)
-    GPIO.setup(wheels["front"]["right"]["forward"], GPIO.OUT)
-    GPIO.setup(wheels["front"]["right"]["reverse"], GPIO.OUT)
-    GPIO.setup(wheels["front"]["left"]["forward"], GPIO.OUT)
-    GPIO.setup(wheels["front"]["left"]["reverse"], GPIO.OUT)   
-    GPIO.setup(wheels["back"]["right"]["forward"], GPIO.OUT)
-    GPIO.setup(wheels["back"]["right"]["reverse"], GPIO.OUT)
-    GPIO.setup(wheels["back"]["left"]["forward"], GPIO.OUT)
-    GPIO.setup(wheels["back"]["left"]["reverse"], GPIO.OUT)   
-
+    try:
+        GPIO.setmode(GPIO.BOARD)
+        GPIO.setup(wheels["front"]["right"]["forward"], GPIO.OUT)
+        GPIO.setup(wheels["front"]["right"]["reverse"], GPIO.OUT)
+        GPIO.setup(wheels["front"]["left"]["forward"], GPIO.OUT)
+        GPIO.setup(wheels["front"]["left"]["reverse"], GPIO.OUT)   
+        GPIO.setup(wheels["back"]["right"]["forward"], GPIO.OUT)
+        GPIO.setup(wheels["back"]["right"]["reverse"], GPIO.OUT)
+        GPIO.setup(wheels["back"]["left"]["forward"], GPIO.OUT)
+        GPIO.setup(wheels["back"]["left"]["reverse"], GPIO.OUT)   
+    except:
+        pass
     
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
