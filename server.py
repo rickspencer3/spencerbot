@@ -104,7 +104,7 @@ class S(BaseHTTPRequestHandler):
         GPIO.output(wheel_pins["front"]["left"]["forward"], 0)
         GPIO.output(wheel_pins["front"]["left"]["reverse"], 0)
         GPIO.output(wheel_pins["back"]["right"]["forward"], 0)
-        GPIO.output(wheelvs["back"]["right"]["reverse"], 0)
+        GPIO.output(wheel_pins["back"]["right"]["reverse"], 0)
         GPIO.output(wheel_pins["back"]["left"]["forward"], 0)
         GPIO.output(wheel_pins["back"]["left"]["reverse"], 0)
 
