@@ -86,10 +86,9 @@ class S(BaseHTTPRequestHandler):
             self.wfile.write(img)
         
     def do_HEAD(self):
-        self._set_headers()
+        self._set_headers(None)
         
     def do_POST(self):
-        self._set_headers()
         data = self.get_post_data()
         if data["dir"][0] == "F":
             self.forward()
