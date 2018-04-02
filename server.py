@@ -155,14 +155,14 @@ class S(BaseHTTPRequestHandler):
 def initialize_pins():
     if wheel_motors_enabled:
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(wheels_pins["front"]["right"]["forward"], GPIO.OUT)
-        GPIO.setup(wheels_pins["front"]["right"]["reverse"], GPIO.OUT)
-        GPIO.setup(wheels_pins["front"]["left"]["forward"], GPIO.OUT)
-        GPIO.setup(wheels_pins["front"]["left"]["reverse"], GPIO.OUT)   
-        GPIO.setup(wheels_pins["back"]["right"]["forward"], GPIO.OUT)
-        GPIO.setup(wheels_pins["back"]["right"]["reverse"], GPIO.OUT)
-        GPIO.setup(wheels_pins["back"]["left"]["forward"], GPIO.OUT)
-        GPIO.setup(wheels_pins["back"]["left"]["reverse"], GPIO.OUT)
+        GPIO.setup(wheel_pins["front"]["right"]["forward"], GPIO.OUT)
+        GPIO.setup(wheel_pins["front"]["right"]["reverse"], GPIO.OUT)
+        GPIO.setup(wheel_pins["front"]["left"]["forward"], GPIO.OUT)
+        GPIO.setup(wheel_pins["front"]["left"]["reverse"], GPIO.OUT)   
+        GPIO.setup(wheel_pins["back"]["right"]["forward"], GPIO.OUT)
+        GPIO.setup(wheel_pins["back"]["right"]["reverse"], GPIO.OUT)
+        GPIO.setup(wheel_pins["back"]["left"]["forward"], GPIO.OUT)
+        GPIO.setup(wheel_pins["back"]["left"]["reverse"], GPIO.OUT)
 
 
 def run(server_class=HTTPServer, handler_class=S):
