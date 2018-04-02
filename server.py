@@ -21,12 +21,23 @@ wheel_motors_enabled = False
 lcd_enabled = False
 port = 80
 
+parser = argparse.ArgumentParser()
+parser.add_argument('-w', '--disable-wheel-motors', default=0)
+parser.add_argument('-l', '--disable-lcd', default=0)
+parser.add_argument('-p', '--port', default=80)
 
-def import_libraries():
-    if wheel_motors_enabled:
+args = parser.parse_args()
+options = vars(args)
+if options["disable_wheel_motors"] == 0:
+    wheel_motors_enabled = True
+if options["disable_lcd"] == 0:
+    lcd_enabled = True
+port = options["port"]
+    
+if wheel_motors_enabled:
         import RPi.GPIO as GPIO
 
-    if lcd_enabled:
+if lcd_enabled:
         import lcd1602 as lcd
 
 
@@ -72,10 +83,7 @@ class S(BaseHTTPRequestHandler):
         for wheel in wheels:
             print("starting wheel: " + wheel)
             GPIO.output(wheel,1)
-        
-
-
-        
+     
     def left(self):
         self.display_status("CMD: Left")
         
@@ -164,19 +172,7 @@ def run(server_class=HTTPServer, handler_class=S):
     httpd.serve_forever()
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-w', '--disable-wheel-motors', default=0)
-    parser.add_argument('-l', '--disable-lcd', default=0)
-    parser.add_argument('-p', '--port', default=80)
 
-    args = parser.parse_args()
-    options = vars(args)
-    if options["disable_wheel_motors"] == 0:
-        wheel_motors_enabled = True
-    if options["disable_lcd"] == 0:
-        lcd_enabled = True
-    port = options["port"]
     
-    import_libraries()
     run()
         
