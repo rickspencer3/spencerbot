@@ -90,7 +90,7 @@ class S(BaseHTTPRequestHandler):
         
     def do_POST(self):
         self._set_headers()
-        data = self.get_post_data(
+        data = self.get_post_data()
         if data["dir"][0] == "F":
             self.forward()
         elif data["dir"][0] == "S":
