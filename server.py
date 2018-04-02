@@ -166,12 +166,18 @@ def initialize_pins():
 
 def run(server_class=HTTPServer, handler_class=S):
     initialize_pins()
+    import host_ip
+    ip = host_ip.get_ip()
+    ip_add = ip
+    if port != 80:
+        ip_add += ":" + str(port)
+    print ("serving on " + ip_add)
+    if lcd_enabled:
+        lcd.lcd_text(ip_add, lcd.LCD_LINE_2)
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     httpd.serve_forever()
 
-if __name__ == "__main__":
-
-    
+if __name__ == "__main__":    
     run()
         
