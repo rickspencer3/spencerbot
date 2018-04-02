@@ -99,14 +99,14 @@ class S(BaseHTTPRequestHandler):
         if not wheel_motors_enabled:
             return
             
-        GPIO.output(wheels["front"]["right"]["forward"], 0)
-        GPIO.output(wheels["front"]["right"]["reverse"], 0)
-        GPIO.output(wheels["front"]["left"]["forward"], 0)
-        GPIO.output(wheels["front"]["left"]["reverse"], 0)
-        GPIO.output(wheels["back"]["right"]["forward"], 0)
-        GPIO.output(wheels["back"]["right"]["reverse"], 0)
-        GPIO.output(wheels["back"]["left"]["forward"], 0)
-        GPIO.output(wheels["back"]["left"]["reverse"], 0)
+        GPIO.output(wheel_pins["front"]["right"]["forward"], 0)
+        GPIO.output(wheel_pins["front"]["right"]["reverse"], 0)
+        GPIO.output(wheel_pins["front"]["left"]["forward"], 0)
+        GPIO.output(wheel_pins["front"]["left"]["reverse"], 0)
+        GPIO.output(wheel_pins["back"]["right"]["forward"], 0)
+        GPIO.output(wheelvs["back"]["right"]["reverse"], 0)
+        GPIO.output(wheel_pins["back"]["left"]["forward"], 0)
+        GPIO.output(wheel_pins["back"]["left"]["reverse"], 0)
 
     
     def _set_headers(self, type):
