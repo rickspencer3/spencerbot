@@ -3,24 +3,32 @@
 UI for a raspberry pi robot
 
 """
+
+ui_only_mode = False
+
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+
+from sys import argv
+import getopt
+
 import SocketServer
 import os
 import sys
 import cgi
-try:
-    import RPi.GPIO as GPIO
-except:
-    pass
+
+print getopt.getopt(argv[1:],["uionly","u"])
+
+if len(argv) == 2:
+    if argv[1] == "--uionly":
+        print "running in UI debug mode. Not loading GPIO"
+        ui_only_mode = True
+    else:
+        import RPi.GPIO as GPIO
 
 wheels = {"front":{"right":{"forward":40,"reverse":38},"left":{"forward":33,"reverse":37}},"back":{"right":{"forward":18,"reverse":15},"left":{"forward":16,"reverse":12}}}
 
-#right rear: forward: 18, reverse: 15
-#right left: forward 16, reverse: 12
 
 class S(BaseHTTPRequestHandler):
-
-
     def forward(self):
         self.stop()
         GPIO.output(wheels["front"]["right"]["forward"], 1)
@@ -57,7 +65,7 @@ class S(BaseHTTPRequestHandler):
         GPIO.output(wheels["back"]["left"]["reverse"], 0)
 
     
-    def _set_headers(self, type):
+    def _set_headers(self):
         self.send_response(200)
         if type == "htlm":
             self.send_header('Content-type', 'text/html')
@@ -109,7 +117,7 @@ class S(BaseHTTPRequestHandler):
 
 
 def run(server_class=HTTPServer, handler_class=S, port=80):
-    try:
+    if not ui_only_mode:
         GPIO.setmode(GPIO.BOARD)
         GPIO.setup(wheels["front"]["right"]["forward"], GPIO.OUT)
         GPIO.setup(wheels["front"]["right"]["reverse"], GPIO.OUT)
@@ -118,9 +126,7 @@ def run(server_class=HTTPServer, handler_class=S, port=80):
         GPIO.setup(wheels["back"]["right"]["forward"], GPIO.OUT)
         GPIO.setup(wheels["back"]["right"]["reverse"], GPIO.OUT)
         GPIO.setup(wheels["back"]["left"]["forward"], GPIO.OUT)
-        GPIO.setup(wheels["back"]["left"]["reverse"], GPIO.OUT)   
-    except:
-        pass
+        GPIO.setup(wheels["back"]["left"]["reverse"], GPIO.OUT)
     
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
@@ -128,9 +134,12 @@ def run(server_class=HTTPServer, handler_class=S, port=80):
     httpd.serve_forever()
 
 if __name__ == "__main__":
-    from sys import argv
-
-    if len(argv) == 2:
-        run(port=int(argv[1]))
+    if len(argv) == 3:
+        if argv[1] == "--port":
+            if argv[2].isdigit:
+                run(port=int(argv[2]))
+            else:
+                print "Format for specifying port is --port 8080. Cannot set " + argv[2] + " as port"
     else:
         run()
+        
