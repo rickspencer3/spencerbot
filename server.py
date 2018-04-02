@@ -11,6 +11,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from sys import argv
 import getopt
 
+
 import SocketServer
 import os
 import sys
@@ -22,8 +23,9 @@ if len(argv) == 2:
     if argv[1] == "--uionly":
         print "running in UI debug mode. Not loading GPIO"
         ui_only_mode = True
-    else:
-        import RPi.GPIO as GPIO
+else:
+    import RPi.GPIO as GPIO
+
 
 wheels = {"front":{"right":{"forward":40,"reverse":38},"left":{"forward":33,"reverse":37}},"back":{"right":{"forward":18,"reverse":15},"left":{"forward":16,"reverse":12}}}
 
