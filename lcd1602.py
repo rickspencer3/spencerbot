@@ -25,12 +25,12 @@ import RPi.GPIO as GPIO
 import time
 
 # GPIO to LCD mapping
-LCD_RS = 2  # Pi pin 26
-LCD_E  = 3   # Pi pin 24
-LCD_D4 = 5  # Pi pin 22
-LCD_D5 = 6  # Pi pin 18
-LCD_D6 = 9  # Pi pin 16
-LCD_D7 = 11  # Pi pin 12
+LCD_RS = 3  # Pi pin 26
+LCD_E  = 5   # Pi pin 24
+LCD_D4 = 29  # Pi pin 22
+LCD_D5 = 31  # Pi pin 18
+LCD_D6 = 21  # Pi pin 16
+LCD_D7 = 23  # Pi pin 12
 
 # Device constants
 LCD_CHR = True    # Character mode
@@ -43,7 +43,7 @@ mode = False
 # Initialize and clear display
 def lcd_init():
   GPIO.setwarnings(False)
-  GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
+  GPIO.setmode(GPIO.BOARD)       # Use BCM GPIO numbers
   GPIO.setup(LCD_E, GPIO.OUT)  # Set GPIO's to output mode
   GPIO.setup(LCD_RS, GPIO.OUT)
   GPIO.setup(LCD_D4, GPIO.OUT)
