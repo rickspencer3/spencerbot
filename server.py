@@ -10,7 +10,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 from sys import argv
 import getopt
-
+import lcd1602 as lcd
 
 import SocketServer
 import os
@@ -25,6 +25,8 @@ if len(argv) == 2:
         ui_only_mode = True
 else:
     import RPi.GPIO as GPIO
+
+lcd.lcd_init()
 
 
 wheels = {"front":{"right":{"forward":40,"reverse":38},"left":{"forward":33,"reverse":37}},"back":{"right":{"forward":18,"reverse":15},"left":{"forward":16,"reverse":12}}}
@@ -53,6 +55,7 @@ class S(BaseHTTPRequestHandler):
         
     def left(self):
         self.stop()
+        lcd.lcd_text("CMD: Left",lcd.LCD_LINE_2)
         GPIO.output(wheels["front"]["right"]["forward"], 1)
         GPIO.output(wheels["back"]["right"]["forward"], 1)
         
@@ -131,7 +134,7 @@ def run(server_class=HTTPServer, handler_class=S, port=80):
     
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
-    print 'Starting httpd...'
+    lcd.lcd_write("Serving", lcd.LCD_LINE_1)
     httpd.serve_forever()
 
 if __name__ == "__main__":
