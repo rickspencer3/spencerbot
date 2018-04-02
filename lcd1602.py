@@ -38,7 +38,7 @@ LCD_CMD = False   # Command mode
 LCD_CHARS = 16    # Characters per line (16 max)
 LCD_LINE_1 = 0x80 # LCD memory location for 1st line
 LCD_LINE_2 = 0xC0 # LCD memory location 2nd line
-
+mode = False
 
 # Initialize and clear display
 def lcd_init():
@@ -112,16 +112,3 @@ def lcd_text(message,line):
   for i in range(LCD_CHARS):
     lcd_write(ord(message[i]),LCD_CHR)
 
-
-#Begin program
-try:
-  main()
-	  
-except KeyboardInterrupt:
-  pass
-	
-finally:
-  lcd_write(0x01, LCD_CMD)
-  lcd_text("So long!",LCD_LINE_1)
-  lcd_text("MBTechWorks.com",LCD_LINE_2)
-  GPIO.cleanup()
