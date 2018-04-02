@@ -67,7 +67,7 @@ class S(BaseHTTPRequestHandler):
         GPIO.output(wheels["back"]["left"]["reverse"], 0)
 
     
-    def _set_headers(self):
+    def _set_headers(self, type):
         self.send_response(200)
         if type == "htlm":
             self.send_header('Content-type', 'text/html')
