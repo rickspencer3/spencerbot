@@ -8,58 +8,88 @@ ui_only_mode = False
 
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
-from sys import argv
+import argparse
 import getopt
-import lcd1602 as lcd
 
 import SocketServer
 import os
 import sys
 import cgi
 
-print getopt.getopt(argv[1:],["uionly","u"])
-
-if len(argv) == 2:
-    if argv[1] == "--uionly":
-        print "running in UI debug mode. Not loading GPIO"
-        ui_only_mode = True
-else:
-    import RPi.GPIO as GPIO
-
-lcd.lcd_init()
+#run time options
+wheel_motors_enabled = False
+lcd_enabled = False
+port = 80
 
 
-wheels = {"front":{"right":{"forward":40,"reverse":38},"left":{"forward":33,"reverse":37}},"back":{"right":{"forward":18,"reverse":15},"left":{"forward":16,"reverse":12}}}
+def import_libraries():
+    if wheel_motors_enabled:
+        import RPi.GPIO as GPIO
+
+    if lcd_enabled:
+        import lcd1602 as lcd
 
 
+
+wheel_pins = {"front":{"right":{"forward":40,"reverse":38},"left":{"forward":33,"reverse":37}},"back":{"right":{"forward":18,"reverse":15},"left":{"forward":16,"reverse":12}}}
+
+f_wheels = [wheel_pins["front"]["right"]["forward"],
+        wheel_pins["front"]["left"]["forward"],
+        wheel_pins["back"]["right"]["forward"], 
+        wheel_pins["back"]["left"]["forward"]]
+
+b_wheels = [wheel_pins["front"]["right"]["reverse"], 
+        wheel_pins["front"]["left"]["reverse"], 
+        wheel_pins["back"]["right"]["reverse"],
+        wheel_pins["back"]["left"]["reverse"]]
+
+r_wheels = [wheel_pins["front"]["left"]["forward"],
+        wheel_pins["back"]["left"]["forward"]]
+
+l_wheels = [wheel_pins["front"]["right"]["forward"],
+        wheel_pins["back"]["right"]["forward"]]
+
+wheel_commands = {"F":{"command":"Forward","wheels":f_wheels},
+                 "B":{"command":"Reverse","wheels":b_wheels},
+                 "R":{"command":"Right","wheels":r_wheels},
+                 "L":{"command":"Left","wheels":l_wheels}}
+              
 class S(BaseHTTPRequestHandler):
-    def forward(self):
+    def display_status(self, text):
+        print(text)
+        if lcd_enabled:
+            lcd.lcd_text(text,lcd.LCD_LINE_1)
+
+    def drive_wheels(self, wc):
         self.stop()
-        GPIO.output(wheels["front"]["right"]["forward"], 1)
-        GPIO.output(wheels["front"]["left"]["forward"], 1)
-        GPIO.output(wheels["back"]["right"]["forward"], 1)
-        GPIO.output(wheels["back"]["left"]["forward"], 1)
+        
+        self.display_status("CMD: " + wc["command"])
+        
+        if not wheel_motors_enabled:
+            return
+            
+        wheels = wc["wheels"]
+        for wheel in wheels:
+            print("starting wheel: " + wheel)
+            GPIO.output(wheel,1)
+        
 
 
-    def reverse(self):
-        self.stop()
-        GPIO.output(wheels["front"]["right"]["reverse"], 1)
-        GPIO.output(wheels["front"]["left"]["reverse"], 1)
-        GPIO.output(wheels["back"]["right"]["reverse"], 1)
-        GPIO.output(wheels["back"]["left"]["reverse"], 1)
-
-    def right(self):
-        self.stop()
-        GPIO.output(wheels["front"]["left"]["forward"], 1)
-        GPIO.output(wheels["back"]["left"]["forward"], 1)
         
     def left(self):
-        self.stop()
-        lcd.lcd_text("CMD: Left",lcd.LCD_LINE_2)
-        GPIO.output(wheels["front"]["right"]["forward"], 1)
-        GPIO.output(wheels["back"]["right"]["forward"], 1)
+        self.display_status("CMD: Left")
+        
+        wheels = [wheel_pins["front"]["right"]["forward"],
+        wheel_pins["back"]["right"]["forward"]]
+
+        self.drive_wheels(wheels)
+
         
     def stop(self):
+    
+        if not wheel_motors_enabled:
+            return
+            
         GPIO.output(wheels["front"]["right"]["forward"], 0)
         GPIO.output(wheels["front"]["right"]["reverse"], 0)
         GPIO.output(wheels["front"]["left"]["forward"], 0)
@@ -93,16 +123,11 @@ class S(BaseHTTPRequestHandler):
         
     def do_POST(self):
         data = self.get_post_data()
-        if data["dir"][0] == "F":
-            self.forward()
-        elif data["dir"][0] == "S":
+        if data["dir"][0] == "S":
             self.stop()
-        elif data["dir"][0] == "B":
-            self.reverse()
-        elif data["dir"][0] == "R":
-            self.right()
-        elif data["dir"][0] == "L":
-            self.left()
+            self.display_status("CMD: Stop")
+        elif data["dir"][0] in wheel_commands.keys():
+            self.drive_wheels(wheel_commands[data["dir"][0]])
             
     def file_as_binary(self, filename):
         if filename.startswith("/"):
@@ -118,32 +143,40 @@ class S(BaseHTTPRequestHandler):
         length = int(self.headers.getheader('content-length'))
         return cgi.parse_qs(self.rfile.read(length), keep_blank_values=0)
         
-
-
-def run(server_class=HTTPServer, handler_class=S, port=80):
-    if not ui_only_mode:
+def initialize_pins():
+    if wheel_motors_enabled:
         GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(wheels["front"]["right"]["forward"], GPIO.OUT)
-        GPIO.setup(wheels["front"]["right"]["reverse"], GPIO.OUT)
-        GPIO.setup(wheels["front"]["left"]["forward"], GPIO.OUT)
-        GPIO.setup(wheels["front"]["left"]["reverse"], GPIO.OUT)   
-        GPIO.setup(wheels["back"]["right"]["forward"], GPIO.OUT)
-        GPIO.setup(wheels["back"]["right"]["reverse"], GPIO.OUT)
-        GPIO.setup(wheels["back"]["left"]["forward"], GPIO.OUT)
-        GPIO.setup(wheels["back"]["left"]["reverse"], GPIO.OUT)
-    
+        GPIO.setup(wheels_pins["front"]["right"]["forward"], GPIO.OUT)
+        GPIO.setup(wheels_pins["front"]["right"]["reverse"], GPIO.OUT)
+        GPIO.setup(wheels_pins["front"]["left"]["forward"], GPIO.OUT)
+        GPIO.setup(wheels_pins["front"]["left"]["reverse"], GPIO.OUT)   
+        GPIO.setup(wheels_pins["back"]["right"]["forward"], GPIO.OUT)
+        GPIO.setup(wheels_pins["back"]["right"]["reverse"], GPIO.OUT)
+        GPIO.setup(wheels_pins["back"]["left"]["forward"], GPIO.OUT)
+        GPIO.setup(wheels_pins["back"]["left"]["reverse"], GPIO.OUT)
+    if lcd_enabled:
+        lcd.lcd_init()
+
+def run(server_class=HTTPServer, handler_class=S):
+    initialize_pins()
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
-    lcd.lcd_text("Serving", lcd.LCD_LINE_1)
     httpd.serve_forever()
 
 if __name__ == "__main__":
-    if len(argv) == 3:
-        if argv[1] == "--port":
-            if argv[2].isdigit:
-                run(port=int(argv[2]))
-            else:
-                print "Format for specifying port is --port 8080. Cannot set " + argv[2] + " as port"
-    else:
-        run()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-w', '--disable-wheel-motors', default=0)
+    parser.add_argument('-l', '--disable-lcd', default=0)
+    parser.add_argument('-p', '--port', default=80)
+
+    args = parser.parse_args()
+    options = vars(args)
+    if options["disable_wheel_motors"] == 0:
+        wheel_motors_enabled = True
+    if options["disable_lcd"] == 0:
+        lcd_enabled = True
+    port = options["port"]
+    
+    import_libraries()
+    run()
         
