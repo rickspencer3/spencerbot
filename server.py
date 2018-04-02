@@ -82,7 +82,6 @@ class S(BaseHTTPRequestHandler):
             
         wheels = wc["wheels"]
         for wheel in wheels:
-            print("starting wheel: " + wheel)
             GPIO.output(wheel,1)
      
     def left(self):
