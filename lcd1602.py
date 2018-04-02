@@ -39,9 +39,9 @@ LCD_CHARS = 16    # Characters per line (16 max)
 LCD_LINE_1 = 0x80 # LCD memory location for 1st line
 LCD_LINE_2 = 0xC0 # LCD memory location 2nd line
 
-# Define main program code
-def main():
-  
+
+# Initialize and clear display
+def lcd_init():
   GPIO.setwarnings(False)
   GPIO.setmode(GPIO.BCM)       # Use BCM GPIO numbers
   GPIO.setup(LCD_E, GPIO.OUT)  # Set GPIO's to output mode
@@ -50,42 +50,7 @@ def main():
   GPIO.setup(LCD_D5, GPIO.OUT)
   GPIO.setup(LCD_D6, GPIO.OUT)
   GPIO.setup(LCD_D7, GPIO.OUT)
-
-# Initialize display
-  lcd_init()
-
-# Loop - send text and sleep 3 seconds between texts
-# Change text to anything you wish, but must be 16 characters or less
-
-  while True:
-    lcd_text("Hello World!",LCD_LINE_1)
-    lcd_text("",LCD_LINE_2)
-
-    lcd_text("Rasbperry Pi",LCD_LINE_1)
-    lcd_text("16x2 LCD Display",LCD_LINE_2)
-
-    time.sleep(3) # 3 second delay
-
-    lcd_text("ABCDEFGHIJKLMNOP",LCD_LINE_1)
-    lcd_text("1234567890123456",LCD_LINE_2)
-
-    time.sleep(3) # 3 second delay
-
-    lcd_text("I love my",LCD_LINE_1)
-    lcd_text("Raspberry Pi!",LCD_LINE_2)
-
-    time.sleep(3)
-
-    lcd_text("MBTechWorks.com",LCD_LINE_1)
-    lcd_text("For more R Pi",LCD_LINE_2)
-
-    time.sleep(3)
-
-# End of main program code
-
-
-# Initialize and clear display
-def lcd_init():
+  
   lcd_write(0x33,LCD_CMD) # Initialize
   lcd_write(0x32,LCD_CMD) # Set to 4-bit mode
   lcd_write(0x06,LCD_CMD) # Cursor move direction
