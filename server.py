@@ -134,7 +134,7 @@ def run(server_class=HTTPServer, handler_class=S, port=80):
     
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)
-    lcd.lcd_write("Serving", lcd.LCD_LINE_1)
+    lcd.lcd_text("Serving", lcd.LCD_LINE_1)
     httpd.serve_forever()
 
 if __name__ == "__main__":
