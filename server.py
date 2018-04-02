@@ -38,7 +38,8 @@ if wheel_motors_enabled:
         import RPi.GPIO as GPIO
 
 if lcd_enabled:
-        import lcd1602 as lcd
+    import lcd1602 as lcd
+    lcd.lcd_init()
 
 
 
@@ -162,8 +163,7 @@ def initialize_pins():
         GPIO.setup(wheels_pins["back"]["right"]["reverse"], GPIO.OUT)
         GPIO.setup(wheels_pins["back"]["left"]["forward"], GPIO.OUT)
         GPIO.setup(wheels_pins["back"]["left"]["reverse"], GPIO.OUT)
-    if lcd_enabled:
-        lcd.lcd_init()
+
 
 def run(server_class=HTTPServer, handler_class=S):
     initialize_pins()
