@@ -121,8 +121,8 @@ class S(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/":
             if not controls_served and lcd_enabled:
-                lcd.lcd_text("Ready", lcd.LCD_LINE_1)
-                lcd.lcd_text("", lcd.LCD_LINE_2)
+                lcd.lcd_text("Spencerbot", lcd.LCD_LINE_1)
+                lcd.lcd_text("Ready", lcd.LCD_LINE_2)
             self._set_headers("html")
             html = self.file_as_string("home.html")
             self.wfile.write(html)
