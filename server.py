@@ -65,6 +65,8 @@ wheel_commands = {"F":{"command":"Forward","wheels":f_wheels},
                  "B":{"command":"Reverse","wheels":b_wheels},
                  "R":{"command":"Right","wheels":r_wheels},
                  "L":{"command":"Left","wheels":l_wheels}}
+                 
+controls_served = False
               
 class S(BaseHTTPRequestHandler):
     def display_status(self, text):
@@ -118,6 +120,9 @@ class S(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/":
+            if not controls_served and lcd_enabled:
+                lcd.lcd_text("Ready", lcd.LCD_LINE_1)
+                lcd.lcd_text("", lcd.LCD_LINE_2)
             self._set_headers("html")
             html = self.file_as_string("home.html")
             self.wfile.write(html)
@@ -173,6 +178,7 @@ def run(server_class=HTTPServer, handler_class=S):
         ip_add += ":" + str(port)
     print ("serving on " + ip_add)
     if lcd_enabled:
+        lcd.lcd_text("Controls at", lcd.LCD_LINE_1)
         lcd.lcd_text(ip_add, lcd.LCD_LINE_2)
     server_address = ('', port)
     httpd = server_class(server_address, handler_class)

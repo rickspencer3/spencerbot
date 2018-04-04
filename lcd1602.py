@@ -1,36 +1,20 @@
 #  MBTechWorks.com 2016
 #  Control an LCD 1602 display from Raspberry Pi with Python programming
+# Butchered by Rick Spencer to make it work with my robot
+
 
 #!/usr/bin/python
-
-# Pinout of the LCD:
-# 1 : GND
-# 2 : 5V power
-# 3 : Display contrast    - Connect to middle pin potentiometer   
-# 4 : RS (Register Select)
-# 5 : R/W (Read Write)    - Ground this pin (important)
-# 6 : Enable or Strobe
-# 7 : Data Bit 0          - data pin 0, 1, 2, 3 are not used
-# 8 : Data Bit 1          -   
-# 9 : Data Bit 2          -   
-# 10: Data Bit 3          -   
-# 11: Data Bit 4
-# 12: Data Bit 5
-# 13: Data Bit 6
-# 14: Data Bit 7
-# 15: LCD Backlight +5V
-# 16: LCD Backlight GND
 
 import RPi.GPIO as GPIO
 import time
 
 # GPIO to LCD mapping
-LCD_RS = 3  # Pi pin 26
-LCD_E  = 5   # Pi pin 24
-LCD_D4 = 29  # Pi pin 22
-LCD_D5 = 31  # Pi pin 18
-LCD_D6 = 21  # Pi pin 16
-LCD_D7 = 23  # Pi pin 12
+LCD_RS = 3
+LCD_E  = 5
+LCD_D4 = 29
+LCD_D5 = 31
+LCD_D6 = 21
+LCD_D7 = 23
 
 # Device constants
 LCD_CHR = True    # Character mode
