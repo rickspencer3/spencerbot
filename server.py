@@ -85,14 +85,6 @@ class S(BaseHTTPRequestHandler):
         wheels = wc["wheels"]
         for wheel in wheels:
             GPIO.output(wheel,1)
-     
-    def left(self):
-        self.display_status("CMD: Left")
-        
-        wheels = [wheel_pins["front"]["right"]["forward"],
-        wheel_pins["back"]["right"]["forward"]]
-
-        self.drive_wheels(wheels)
 
         
     def stop(self):
@@ -123,6 +115,7 @@ class S(BaseHTTPRequestHandler):
             if not controls_served and lcd_enabled:
                 lcd.lcd_text("Spencerbot", lcd.LCD_LINE_1)
                 lcd.lcd_text("Ready", lcd.LCD_LINE_2)
+                controls_served = True
             self._set_headers("html")
             html = self.file_as_string("home.html")
             self.wfile.write(html)
