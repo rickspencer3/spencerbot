@@ -4,8 +4,6 @@ UI for a raspberry pi robot
 
 """
 
-ui_only_mode = False
-
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
 import argparse
@@ -21,6 +19,10 @@ wheel_motors_enabled = False
 lcd_enabled = False
 port = 80
 
+#initial state
+ui_served = False
+
+#cli args
 parser = argparse.ArgumentParser()
 parser.add_argument('-w', '--disable-wheel-motors', default=0)
 parser.add_argument('-l', '--disable-lcd', default=0)
@@ -32,8 +34,9 @@ if options["disable_wheel_motors"] == 0:
     wheel_motors_enabled = True
 if options["disable_lcd"] == 0:
     lcd_enabled = True
-port = options["port"]
-    
+port = int(options["port"])
+
+# Conditional imports
 if wheel_motors_enabled:
         import RPi.GPIO as GPIO
 
@@ -42,7 +45,7 @@ if lcd_enabled:
     lcd.lcd_init()
 
 
-
+#set up pins to wheels
 wheel_pins = {"front":{"right":{"forward":40,"reverse":38},"left":{"forward":33,"reverse":37}},"back":{"right":{"forward":18,"reverse":15},"left":{"forward":16,"reverse":12}}}
 
 f_wheels = [wheel_pins["front"]["right"]["forward"],
@@ -65,10 +68,11 @@ wheel_commands = {"F":{"command":"Forward","wheels":f_wheels},
                  "B":{"command":"Reverse","wheels":b_wheels},
                  "R":{"command":"Right","wheels":r_wheels},
                  "L":{"command":"Left","wheels":l_wheels}}
-                 
-controls_served = False
+                
               
 class S(BaseHTTPRequestHandler):
+    ui_served = ui_served
+    
     def display_status(self, text):
         print(text)
         if lcd_enabled:
@@ -112,10 +116,10 @@ class S(BaseHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == "/":
-            if not controls_served and lcd_enabled:
+            if (not self.ui_served) and lcd_enabled:
                 lcd.lcd_text("Spencerbot", lcd.LCD_LINE_1)
                 lcd.lcd_text("Ready", lcd.LCD_LINE_2)
-                controls_served = True
+                self.ui_served = True
             self._set_headers("html")
             html = self.file_as_string("home.html")
             self.wfile.write(html)
